@@ -2,60 +2,67 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>深淵遠征隊 第5季 - 混合排序版</title>
+    <title>深淵遠征隊 第5季 - 多帳號獨立追蹤工具</title>
     <style>
         body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .btn-group { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #e0e0e0; padding: 12px; text-align: center; }
-        th { background-color: #34495e; color: white; position: sticky; top: 0; z-index: 10; }
-        .rank { font-size: 11px; padding: 2px 6px; border-radius: 4px; color: white; margin-right: 8px; display: inline-block; min-width: 50px; text-align: center; }
+        .container { max-width: 800px; margin: auto; }
+        .header-section { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; text-align: center; }
+        .account-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); margin-bottom: 30px; border-top: 5px solid #34495e; }
+        h2 { color: #2c3e50; margin-top: 0; }
+        h3 { color: #34495e; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        .btn-group { margin-top: 15px; display: flex; justify-content: center; gap: 10px; }
+        
+        table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+        th, td { border: 1px solid #e0e0e0; padding: 10px; text-align: center; }
+        th { background-color: #34495e; color: white; position: sticky; top: 0; z-index: 5; }
+        
+        .rank { font-size: 11px; padding: 2px 6px; border-radius: 4px; color: white; margin-right: 8px; display: inline-block; min-width: 45px; text-align: center; }
         .rank-特殊 { background-color: #c0392b; animation: glow 1.5s infinite alternate; }
         .rank-特級 { background-color: #e67e22; }
         .rank-最上級 { background-color: #8e44ad; }
         .rank-上級 { background-color: #2980b9; }
         .rank-中級 { background-color: #27ae60; }
         .rank-下級 { background-color: #95a5a6; }
-        @keyframes glow { from { box-shadow: 0 0 5px #ff0000; } to { box-shadow: 0 0 15px #ff0000; } }
-        .member-name { text-align: left; font-weight: bold; border-left: 6px solid #ccc; padding-left: 10px; }
-        .cat-劍士 { border-left-color: #e74c3c; background-color: #fffafa; }
-        .cat-法師 { border-left-color: #3498db; background-color: #f4faff; }
-        .cat-弓箭手 { border-left-color: #2ecc71; background-color: #f4fff6; }
-        .cat-盜賊 { border-left-color: #9b59b6; background-color: #fbf4ff; }
-        .cat-海盜 { border-left-color: #f1c40f; background-color: #fffcf4; }
-        .is-checked { background-color: #e8f5e9 !important; border-left: 2px solid #27ae60; }
-        tr:hover td { background-color: #eaeaea !important; }
-        input[type="checkbox"] { transform: scale(1.6); cursor: pointer; }
-        button { padding: 8px 15px; border-radius: 5px; border: none; color: white; cursor: pointer; font-weight: bold; }
+        @keyframes glow { from { box-shadow: 0 0 5px #ff0000; } to { box-shadow: 0 0 10px #ff0000; } }
+        
+        .member-name { text-align: left; font-weight: bold; border-left: 5px solid #ccc; padding-left: 10px; }
+        .cat-劍士 { border-left-color: #e74c3c; }
+        .cat-法師 { border-left-color: #3498db; }
+        .cat-弓箭手 { border-left-color: #2ecc71; }
+        .cat-盜賊 { border-left-color: #9b59b6; }
+        .cat-海盜 { border-left-color: #f1c40f; }
+        
+        .is-checked { background-color: #e8f5e9 !important; }
+        input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
+        
+        button { padding: 10px 20px; border-radius: 6px; border: none; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-add { background: #3498db; }
+        .btn-add:hover { background: #2980b9; }
         .btn-clear { background: #e74c3c; }
         .btn-export { background: #27ae60; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h2>深淵遠征隊 第5季 (置頂看級別 / 未收看職業)</h2>
-    <div class="btn-group">
-        <button class="btn-clear" onclick="clearData()">清空所有紀錄</button>
-        <button class="btn-export" onclick="exportCode()">分享/備份代碼</button>
+    <div class="header-section">
+        <h2>深淵遠征隊 第5季 傭兵追蹤系統</h2>
+        <div class="btn-group">
+            <button class="btn-add" onclick="addAccount()">＋ 新增帳號表格</button>
+            <button class="btn-export" onclick="exportData()">備份數據</button>
+            <button class="btn-clear" onclick="clearAll()">清空全部</button>
+        </div>
     </div>
-    <table>
-        <thead>
-            <tr>
-                <th width="35%">傭兵名稱 (等級/職業)</th>
-                <th>帳 1</th><th>帳 2</th><th>帳 3</th><th>帳 4</th><th>帳 5</th>
-            </tr>
-        </thead>
-        <tbody id="list-body"></tbody>
-    </table>
+
+    <div id="account-container">
+        </div>
 </div>
 
 <script>
     const jobOrder = { "劍士": 1, "法師": 2, "弓箭手": 3, "盜賊": 4, "海盜": 5 };
     const rankOrder = { "特殊": 1, "特級": 2, "最上級": 3, "上級": 4, "中級": 5, "下級": 6 };
 
-    const data = [
+    const rawData = [
         { id: 1, r: "特殊", n: "盜賊 芬" },
         { id: 2, r: "特級", n: "劍士 斯托尼" }, { id: 3, r: "特級", n: "劍士 多藝" }, { id: 4, r: "特級", n: "劍士 貝魯" },
         { id: 5, r: "特級", n: "法師 利美" }, { id: 6, r: "特級", n: "法師 寧寧" },
@@ -84,66 +91,98 @@
         { id: 59, r: "下級", n: "海盜 奧莉薇" }, { id: 60, r: "下級", n: "海盜 虎克" }, { id: 61, r: "下級", n: "海盜 星星家" }
     ];
 
-    const KEY = 'abyss_v5_mixed_sort';
-    const body = document.getElementById('list-body');
+    const STORAGE_KEY = 'abyss_multi_account_v3';
+    let appState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"count": 1, "checks": {}}');
 
-    function renderTable() {
-        const saved = JSON.parse(localStorage.getItem(KEY) || "{}");
-        
-        const sortedData = [...data].sort((a, b) => {
-            const aChecked = [1,2,3,4,5].some(num => saved[`${a.id}-${num}`]);
-            const bChecked = [1,2,3,4,5].some(num => saved[`${b.id}-${num}`]);
+    function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+    }
 
-            // 1. 如果兩邊勾選狀態不同，已勾選的排前面
+    function renderAll() {
+        const container = document.getElementById('account-container');
+        container.innerHTML = '';
+        for (let i = 1; i <= appState.count; i++) {
+            renderAccount(i);
+        }
+    }
+
+    function renderAccount(accNum) {
+        const container = document.getElementById('account-container');
+        const card = document.createElement('div');
+        card.className = 'account-card';
+        card.innerHTML = `<h3>帳號 ${accNum}</h3>`;
+
+        const table = document.createElement('table');
+        table.innerHTML = `<thead><tr><th width="70%">傭兵名稱 (等級/職業)</th><th>已獲得</th></tr></thead>`;
+        const tbody = document.createElement('tbody');
+
+        // 排序邏輯：針對目前帳號(accNum)進行排序
+        const sortedData = [...rawData].sort((a, b) => {
+            const aChecked = appState.checks[`${accNum}-${a.id}`];
+            const bChecked = appState.checks[`${accNum}-${b.id}`];
             if (aChecked && !bChecked) return -1;
             if (!aChecked && bChecked) return 1;
-
-            // 2. 如果都「已勾選」：按級別排序 (特殊 > 特級 > ...)
+            
             if (aChecked && bChecked) {
                 if (rankOrder[a.r] !== rankOrder[b.r]) return rankOrder[a.r] - rankOrder[b.r];
                 return jobOrder[a.n.split(' ')[0]] - jobOrder[b.n.split(' ')[0]];
             }
-
-            // 3. 如果都「未勾選」：按職業排序 (劍 > 法 > ...)
             const aJob = a.n.split(' ')[0];
             const bJob = b.n.split(' ')[0];
             if (jobOrder[aJob] !== jobOrder[bJob]) return jobOrder[aJob] - jobOrder[bJob];
             return rankOrder[a.r] - rankOrder[b.r];
         });
 
-        body.innerHTML = '';
         sortedData.forEach(item => {
             const tr = document.createElement('tr');
             const job = item.n.split(' ')[0];
-            const hasAnyCheck = [1,2,3,4,5].some(num => saved[`${item.id}-${num}`]);
-            if (hasAnyCheck) tr.classList.add('is-checked');
+            const isChecked = appState.checks[`${accNum}-${item.id}`];
+            if (isChecked) tr.className = 'is-checked';
 
-            tr.innerHTML = `<td class="member-name cat-${job}"><span class="rank rank-${item.r}">${item.r}</span>${item.n}</td>`;
-            
-            for (let i = 1; i <= 5; i++) {
-                const td = document.createElement('td');
-                const cb = document.createElement('input');
-                cb.type = 'checkbox';
-                cb.checked = !!saved[`${item.id}-${i}`];
-                cb.onchange = () => {
-                    const current = JSON.parse(localStorage.getItem(KEY) || "{}");
-                    current[`${item.id}-${i}`] = cb.checked;
-                    localStorage.setItem(KEY, JSON.stringify(current));
-                    renderTable();
-                };
-                td.onclick = (e) => { if(e.target !== cb) { cb.click(); } };
-                td.appendChild(cb);
-                tr.appendChild(td);
-            }
-            body.appendChild(tr);
+            tr.innerHTML = `
+                <td class="member-name cat-${job}"><span class="rank rank-${item.r}">${item.r}</span>${item.n}</td>
+                <td><input type="checkbox" ${isChecked ? 'checked' : ''}></td>
+            `;
+
+            const cb = tr.querySelector('input');
+            cb.onchange = () => {
+                appState.checks[`${accNum}-${item.id}`] = cb.checked;
+                saveState();
+                renderAll(); // 重新整理所有表格排序
+            };
+            tr.onclick = (e) => { if(e.target !== cb) cb.click(); };
+            tbody.appendChild(tr);
         });
+
+        table.appendChild(tbody);
+        card.appendChild(table);
+        container.appendChild(card);
     }
 
-    function clearData() { if(confirm("確定要清空嗎？")) { localStorage.removeItem(KEY); renderTable(); } }
-    function exportCode() { prompt("備份代碼：", btoa(localStorage.getItem(KEY) || "{}")); }
+    function addAccount() {
+        if (appState.count < 5) {
+            appState.count++;
+            saveState();
+            renderAll();
+        } else {
+            alert("最多支援 5 個帳號表格喔！");
+        }
+    }
 
-    renderTable();
+    function clearAll() {
+        if (confirm("確定要重置嗎？會恢復到只有一個帳號且勾選全清空。")) {
+            appState = {count: 1, checks: {}};
+            saveState();
+            renderAll();
+        }
+    }
+
+    function exportData() {
+        prompt("請複製以下備份代碼：", btoa(JSON.stringify(appState)));
+    }
+
+    // 初始化啟動
+    renderAll();
 </script>
 </body>
 </html>
-
