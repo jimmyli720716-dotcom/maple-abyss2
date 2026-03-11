@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>深淵遠征隊 第5季 - 多帳號獨立追蹤工具</title>
+    <title>深淵遠征隊 第5季 - 職業色彩優化版</title>
     <style>
         body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; padding: 20px; }
         .container { max-width: 800px; margin: auto; }
@@ -16,28 +16,38 @@
         th, td { border: 1px solid #e0e0e0; padding: 10px; text-align: center; }
         th { background-color: #34495e; color: white; position: sticky; top: 0; z-index: 5; }
         
-        .rank { font-size: 11px; padding: 2px 6px; border-radius: 4px; color: white; margin-right: 8px; display: inline-block; min-width: 45px; text-align: center; }
+        /* 級別標籤通用樣式 */
+        .rank { font-size: 11px; padding: 2px 6px; border-radius: 4px; color: white; margin-right: 8px; display: inline-block; min-width: 45px; text-align: center; text-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
         .rank-特殊 { background-color: #c0392b; animation: glow 1.5s infinite alternate; }
         .rank-特級 { background-color: #e67e22; }
         .rank-最上級 { background-color: #8e44ad; }
         .rank-上級 { background-color: #2980b9; }
         .rank-中級 { background-color: #27ae60; }
-        .rank-下級 { background-color: #95a5a6; }
+        .rank-下級 { background-color: #7f8c8d; }
         @keyframes glow { from { box-shadow: 0 0 5px #ff0000; } to { box-shadow: 0 0 10px #ff0000; } }
         
-        .member-name { text-align: left; font-weight: bold; border-left: 5px solid #ccc; padding-left: 10px; }
-        .cat-劍士 { border-left-color: #e74c3c; }
-        .cat-法師 { border-left-color: #3498db; }
-        .cat-弓箭手 { border-left-color: #2ecc71; }
-        .cat-盜賊 { border-left-color: #9b59b6; }
-        .cat-海盜 { border-left-color: #f1c40f; }
+        /* 職業分類顏色設定 */
+        .member-name { text-align: left; font-weight: bold; border-left: 8px solid #ccc; padding-left: 12px; }
         
-        .is-checked { background-color: #e8f5e9 !important; }
+        /* 劍士 - 紅色 */
+        .cat-劍士 { border-left-color: #ff4d4d; color: #b30000; background-color: #fff5f5; }
+        /* 法師 - 藍色 */
+        .cat-法師 { border-left-color: #3399ff; color: #0052cc; background-color: #f0f7ff; }
+        /* 弓箭手 - 綠色 */
+        .cat-弓箭手 { border-left-color: #2eb82e; color: #006600; background-color: #f2fff2; }
+        /* 盜賊 - 紫色 */
+        .cat-盜賊 { border-left-color: #9933ff; color: #4d0099; background-color: #faf5ff; }
+        /* 海盜 - 灰色 */
+        .cat-海盜 { border-left-color: #808080; color: #333333; background-color: #f9f9f9; }
+        
+        /* 已勾選狀態覆蓋顏色 */
+        .is-checked { background-color: #e8f5e9 !important; border-left-color: #27ae60 !important; color: #2c3e50 !important; }
+        .is-checked td { color: #27ae60 !important; }
+
         input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
         
         button { padding: 10px 20px; border-radius: 6px; border: none; color: white; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-add { background: #3498db; }
-        .btn-add:hover { background: #2980b9; }
         .btn-clear { background: #e74c3c; }
         .btn-export { background: #27ae60; }
     </style>
@@ -46,7 +56,7 @@
 
 <div class="container">
     <div class="header-section">
-        <h2>深淵遠征隊 第5季 傭兵追蹤系統</h2>
+        <h2>深淵遠征隊 第5季 傭兵追蹤 (職業色彩版)</h2>
         <div class="btn-group">
             <button class="btn-add" onclick="addAccount()">＋ 新增帳號表格</button>
             <button class="btn-export" onclick="exportData()">備份數據</button>
@@ -54,8 +64,7 @@
         </div>
     </div>
 
-    <div id="account-container">
-        </div>
+    <div id="account-container"></div>
 </div>
 
 <script>
@@ -86,24 +95,20 @@
         { id: 46, r: "中級", n: "海盜 修莉" }, { id: 47, r: "中級", n: "海盜 吉恩" },
         { id: 48, r: "下級", n: "劍士 裴斯" }, { id: 49, r: "下級", n: "劍士 羅迪亞娜" }, { id: 50, r: "下級", n: "劍士 塔拉" },
         { id: 51, r: "下級", n: "法師 娜美" }, { id: 52, r: "下級", n: "法師 麗安" }, { id: 53, r: "下級", n: "法師 哲利" },
-        { id: 54, r: "下級", n: "弓箭手 比爾" }, { id: 55, r: "下級", n: "弓箭手 倉武" }, { id: 56, r: "下級", n: "弓箭手 布雷迪" },
+        { id: 54, r: "下級", n: "弓箭手 比爾" }, { id: 55, r: "下級", n: "倉武", n: "弓箭手 倉武" }, { id: 56, r: "下級", n: "弓箭手 布雷迪" },
         { id: 57, r: "下級", n: "盜賊 尼爾" }, { id: 58, r: "下級", n: "盜賊 餅乾" },
         { id: 59, r: "下級", n: "海盜 奧莉薇" }, { id: 60, r: "下級", n: "海盜 虎克" }, { id: 61, r: "下級", n: "海盜 星星家" }
     ];
 
-    const STORAGE_KEY = 'abyss_multi_account_v3';
+    const STORAGE_KEY = 'abyss_color_sort_v4';
     let appState = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"count": 1, "checks": {}}');
 
-    function saveState() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-    }
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); }
 
     function renderAll() {
         const container = document.getElementById('account-container');
         container.innerHTML = '';
-        for (let i = 1; i <= appState.count; i++) {
-            renderAccount(i);
-        }
+        for (let i = 1; i <= appState.count; i++) { renderAccount(i); }
     }
 
     function renderAccount(accNum) {
@@ -113,16 +118,14 @@
         card.innerHTML = `<h3>帳號 ${accNum}</h3>`;
 
         const table = document.createElement('table');
-        table.innerHTML = `<thead><tr><th width="70%">傭兵名稱 (等級/職業)</th><th>已獲得</th></tr></thead>`;
+        table.innerHTML = `<thead><tr><th width="80%">傭兵名稱 (等級/職業)</th><th>已獲得</th></tr></thead>`;
         const tbody = document.createElement('tbody');
 
-        // 排序邏輯：針對目前帳號(accNum)進行排序
         const sortedData = [...rawData].sort((a, b) => {
             const aChecked = appState.checks[`${accNum}-${a.id}`];
             const bChecked = appState.checks[`${accNum}-${b.id}`];
             if (aChecked && !bChecked) return -1;
             if (!aChecked && bChecked) return 1;
-            
             if (aChecked && bChecked) {
                 if (rankOrder[a.r] !== rankOrder[b.r]) return rankOrder[a.r] - rankOrder[b.r];
                 return jobOrder[a.n.split(' ')[0]] - jobOrder[b.n.split(' ')[0]];
@@ -137,7 +140,7 @@
             const tr = document.createElement('tr');
             const job = item.n.split(' ')[0];
             const isChecked = appState.checks[`${accNum}-${item.id}`];
-            if (isChecked) tr.className = 'is-checked';
+            if (isChecked) tr.classList.add('is-checked');
 
             tr.innerHTML = `
                 <td class="member-name cat-${job}"><span class="rank rank-${item.r}">${item.r}</span>${item.n}</td>
@@ -148,7 +151,7 @@
             cb.onchange = () => {
                 appState.checks[`${accNum}-${item.id}`] = cb.checked;
                 saveState();
-                renderAll(); // 重新整理所有表格排序
+                renderAll();
             };
             tr.onclick = (e) => { if(e.target !== cb) cb.click(); };
             tbody.appendChild(tr);
@@ -160,28 +163,20 @@
     }
 
     function addAccount() {
-        if (appState.count < 5) {
-            appState.count++;
-            saveState();
-            renderAll();
-        } else {
-            alert("最多支援 5 個帳號表格喔！");
-        }
+        if (appState.count < 5) { appState.count++; saveState(); renderAll(); }
+        else { alert("目前最多支援 5 個帳號！"); }
     }
 
     function clearAll() {
-        if (confirm("確定要重置嗎？會恢復到只有一個帳號且勾選全清空。")) {
+        if (confirm("要清空所有帳號的紀錄嗎？")) {
             appState = {count: 1, checks: {}};
             saveState();
             renderAll();
         }
     }
 
-    function exportData() {
-        prompt("請複製以下備份代碼：", btoa(JSON.stringify(appState)));
-    }
+    function exportData() { prompt("備份代碼：", btoa(JSON.stringify(appState))); }
 
-    // 初始化啟動
     renderAll();
 </script>
 </body>
