@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>深淵遠征隊第5季 - 傭兵管理系統 (芬)</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f0f2f5; padding: 20px; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; margin-bottom: 10px; }
+        .hint { text-align: center; color: #666; font-size: 0.9em; margin-bottom: 20px; }
+        
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #e0e0e0; padding: 10px; text-align: center; }
+        th { background-color: #2c3e50; color: white; position: sticky; top: 0; z-index: 10; }
+        
+        /* 階級顏色定義 */
+        .rank { font-size: 11px; padding: 2px 5px; border-radius: 4px; margin-right: 8px; color: white; min-width: 45px; display: inline-block; text-align: center; vertical-align: middle; }
+        .rank-特殊 { background-color: #c0392b; font-weight: bold; border: 2px solid #ff0000; animation: glow 1.5s infinite alternate; } 
+        .rank-特級 { background-color: #e67e22; font-weight: bold; border: 1px solid #d35400; box-shadow: 0 0 5px rgba(230,126,34,0.5); } 
+        .rank-最上級 { background-color: #8e44ad; } 
+        .rank-上級 { background-color: #2980b9; } 
+        .rank-中級 { background-color: #27ae60; } 
+        .rank-下級 { background-color: #95a5a6; } 
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px #ff0000; }
+            to { box-shadow: 0 0 15px #ff0000; }
+        }
+
+        .member-name { text-align: left; font-weight: bold; }
+        .cat-特殊 { border-left: 6px solid #000; background-color: #fffafa; }
+        .cat-劍士 { border-left: 6px solid #e74c3c; }
+        .cat-法師 { border-left: 6px solid #3498db; }
+        .cat-弓箭手 { border-left: 6px solid #2ecc71; }
+        .cat-盜賊 { border-left: 6px solid #9b59b6; }
+        .cat-海盜 { border-left: 6px solid #f1c40f; }
+
+        tr:hover { background-color: #f8f9fa; }
+        input[type="checkbox"] { transform: scale(1.5); cursor: pointer; }
+        .save-status { text-align: right; font-size: 12px; color: #27ae60; margin-top: 5px; height: 15px; }
+        .btn-clear { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; float: left; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <button class="btn-clear" onclick="clearAll()">清空全部勾選</button>
+    <h2>深淵遠征隊第5季 - 傭兵管理表</h2>
+    <div class="hint">勾選紀錄將自動儲存</div>
+    <div id="status" class="save-status"></div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th width="35%">傭兵名稱 (階級)</th>
+                <th>帳號 1</th>
+                <th>帳號 2</th>
+                <th>帳號 3</th>
+                <th>帳號 4</th>
+                <th>帳號 5</th>
+            </tr>
+        </thead>
+        <tbody id="list-body"></tbody>
+    </table>
+</div>
+
+<script>
+    const data = [
+        // 特殊
+        { r: "特殊", n: "盜賊 芬" },
+        // 特級
+        { r: "特級", n: "盜賊 玲" }, { r: "特級", n: "海盜 艾拉尼" }, { r: "特級", n: "劍士 貝魯" }, { r: "特級", n: "海盜 哈魯艾普" }, { r: "特級", n: "盜賊 西珂" },
+        { r: "特級", n: "弓箭手 伊莉莎白" }, { r: "特級", n: "法師 寧寧" }, { r: "特級", n: "劍士 希爾" }, { r: "特級", n: "海盜 普魯布" }, { r: "特級", n: "盜賊 汀汀" },
+        { r: "特級", n: "弓箭手 泰松" }, { r: "特級", n: "法師 利奧" }, { r: "特級", n: "劍士 斯尼尼" }, { r: "特級", n: "盜賊 康德" }, { r: "特級", n: "法師 露娜" },
+        { r: "特級", n: "海盜 摩天" }, { r: "特級", n: "盜賊 羅蘭提亞" }, { r: "特級", n: "弓箭手 伊莉雅" }, { r: "特級", n: "法師 貝洛甘曼" }, { r: "特級", n: "劍士 巴爾" },
+        // 最上級
+        { r: "最上級", n: "海盜 BOON" }, { r: "最上級", n: "盜賊 派克斯" }, { r: "最上級", n: "弓箭手 賽普艾" }, { r: "最上級", n: "法師 查理艾" }, { r: "最上級", n: "劍士 瑪嘉莉" },
+        { r: "最上級", n: "法師 卡恩" }, { r: "最上級", n: "海盜 亞伊" }, { r: "最上級", n: "盜賊 多仁" }, { r: "最上級", n: "弓箭手 麗可" }, { r: "最上級", n: "法師 艾瑞拉" },
+        { r: "最上級", n: "劍士 蘭岡" }, { r: "最上級", n: "海盜 梅利爾" }, { r: "最上級", n: "盜賊 史黛" }, { r: "最上級", n: "弓箭手 庫特" }, { r: "最上級", n: "法師 赫布拉" },
+        { r: "最上級", n: "劍士 阿爾騰" }, { r: "最上級", n: "弓箭手 莉雅" },
+        // 上級
+        { r: "上級", n: "海盜 查理" }, { r: "上級", n: "盜賊 丹尼爾" }, { r: "上級", n: "弓箭手 艾拉" }, { r: "上級", n: "法師 梅里" }, { r: "上級", n: "劍士 齊格" },
+        { r: "上級", n: "海盜 穆利" }, { r: "上級", n: "盜賊 米勒爾" }, { r: "上級", n: "弓箭手 普蕾伊" }, { r: "上級", n: "法師 艾爾比昂" }, { r: "上級", n: "劍士 萊昂內爾" },
+        // 中級
+        { r: "中級", n: "弓箭手 希露迪" }, { r: "中級", n: "法師 亞利" }, { r: "中級", n: "劍士 庫拉" }, { r: "中級", n: "海盜 虎克" }, { r: "中級", n: "盜賊 菲格" },
+        { r: "中級", n: "弓箭手 詹姆" }, { r: "中級", n: "法師 麗安" }, { r: "中級", n: "劍士 羅維亞娜" },
+        // 下級
+        { r: "下級", n: "海盜 萊納爾" }, { r: "下級", n: "盜賊 尼爾" }, { r: "下級", n: "弓箭手 芭芭" }, { r: "下級", n: "法師 娜美" }, { r: "下級", n: "劍士 索爾" }
+    ];
+
+    const tbody = document.getElementById('list-body');
+    const statusText = document.getElementById('status');
+
+    function save() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const state = Array.from(checkboxes).map(cb => cb.checked);
+        localStorage.setItem('maple_abyss_v5_final_state', JSON.stringify(state));
+        statusText.textContent = "已自動儲存變更";
+        setTimeout(() => { statusText.textContent = ""; }, 1500);
+    }
+
+    function clearAll() {
+        if(confirm("確定要清空所有帳號的勾選紀錄嗎？")) {
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            save();
+        }
+    }
+
+    const savedState = JSON.parse(localStorage.getItem('maple_abyss_v5_final_state') || "[]");
+
+    data.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        const job = item.n.split(' ')[0];
+
+        const tdName = document.createElement('td');
+        tdName.className = `member-name cat-${job}`;
+        tdName.innerHTML = `<span class="rank rank-${item.r}">${item.r}</span>${item.n}`;
+        tr.appendChild(tdName);
+
+        for (let i = 1; i <= 5; i++) {
+            const td = document.createElement('td');
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            const stateIndex = index * 5 + (i - 1);
+            if (savedState[stateIndex]) cb.checked = true;
+            cb.addEventListener('change', save);
+            td.onclick = (e) => { if(e.target !== cb) { cb.checked = !cb.checked; save(); } };
+            td.appendChild(cb);
+            tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+    });
+</script>
+
+</body>
+</html>
