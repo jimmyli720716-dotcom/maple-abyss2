@@ -20,11 +20,10 @@
         .rank-下級 { background-color: #95a5a6; }
         @keyframes glow { from { box-shadow: 0 0 5px #ff0000; } to { box-shadow: 0 0 15px #ff0000; } }
         .member-name { text-align: left; font-weight: bold; border-left: 6px solid #ccc; padding-left: 10px; }
-        .cat-特殊 { border-left-color: #000; }
+        .cat-盜賊 { border-left-color: #9b59b6; background-color: #fbf4ff; }
         .cat-劍士 { border-left-color: #e74c3c; background-color: #fffafa; }
         .cat-法師 { border-left-color: #3498db; background-color: #f4faff; }
         .cat-弓箭手 { border-left-color: #2ecc71; background-color: #f4fff6; }
-        .cat-盜賊 { border-left-color: #9b59b6; background-color: #fbf4ff; }
         .cat-海盜 { border-left-color: #f1c40f; background-color: #fffcf4; }
         tr:hover td { background-color: #eaeaea !important; }
         input[type="checkbox"] { transform: scale(1.6); cursor: pointer; }
@@ -35,7 +34,7 @@
 </head>
 <body>
 <div class="container">
-    <h2>深淵遠征隊 第5季 傭兵追蹤表</h2>
+    <h2>深淵遠征隊 第5季 傭兵追蹤表 (完全校對版)</h2>
     <div class="btn-group">
         <button class="btn-clear" onclick="clearData()">清空所有紀錄</button>
         <button class="btn-export" onclick="exportCode()">分享/備份代碼</button>
@@ -44,7 +43,7 @@
         <thead>
             <tr>
                 <th width="35%">傭兵名稱 (等級/職業)</th>
-                <th>帳 1</th><th>帳 2</th><th>帳 3</th><th>帳 4</th><th>帳 5</th>
+                <th>帳號 1</th><th>帳號 2</th><th>帳號 3</th><th>帳號 4</th><th>帳號 5</th>
             </tr>
         </thead>
         <tbody id="list-body"></tbody>
@@ -52,54 +51,57 @@
 </div>
 
 <script>
-    // 嚴格依據：等級(高至低) -> 職業(劍>法>弓>盜>海) 排序
+    // 嚴格依據玩家提供的截圖：等級(高至低) -> 職業(劍>法>弓>盜>海) 重新建檔
     const data = [
-        // 特殊 (1)
-        { r: "特殊", n: "特殊 芬" },
+        // 特殊 (1名)
+        { r: "特殊", n: "盜賊 芬" },
         
-        // 特級 (20)
-        { r: "特級", n: "劍士 巴爾" }, { r: "特級", n: "劍士 斯尼尼" }, { r: "特級", n: "劍士 希爾" }, { r: "特級", n: "劍士 貝魯" },
-        { r: "特級", n: "法師 貝洛甘曼" }, { r: "特級", n: "法師 露娜" }, { r: "特級", n: "法師 利奧" }, { r: "特級", n: "法師 寧寧" },
-        { r: "特級", n: "弓箭手 伊莉雅" }, { r: "特級", n: "弓箭手 泰松" }, { r: "特級", n: "弓箭手 伊莉莎白" },
-        { r: "特級", n: "盜賊 羅蘭提亞" }, { r: "特級", n: "盜賊 康德" }, { r: "特級", n: "盜賊 汀汀" }, { r: "特級", n: "盜賊 西珂" }, { r: "特級", n: "盜賊 玲" },
-        { r: "特級", n: "海盜 摩天" }, { r: "特級", n: "海盜 普魯布" }, { r: "特級", n: "海盜 哈魯艾普" }, { r: "特級", n: "海盜 艾拉尼" },
+        // 特級 (12名)
+        { r: "特級", n: "劍士 斯托尼" }, { r: "特級", n: "劍士 多藝" }, { r: "特級", n: "劍士 貝魯" },
+        { r: "特級", n: "法師 利美" }, { r: "特級", n: "法師 寧寧" },
+        { r: "特級", n: "弓箭手 松松" }, { r: "特級", n: "弓箭手 伊斯頓" },
+        { r: "特級", n: "盜賊 汀汀" }, { r: "特級", n: "盜賊 西河" },
+        { r: "特級", n: "海盜 雅各布" }, { r: "特級", n: "海盜 哈魯艾爾" }, { r: "特級", n: "海盜 艾拉尼" },
 
-        // 最上級 (17)
-        { r: "最上級", n: "劍士 阿爾騰" }, { r: "最上級", n: "劍士 蘭岡" }, { r: "最上級", n: "劍士 瑪嘉莉" },
-        { r: "最上級", n: "法師 赫布拉" }, { r: "最上級", n: "法師 艾瑞拉" }, { r: "最上級", n: "法師 卡恩" }, { r: "最上級", n: "法師 查理艾" },
-        { r: "最上級", n: "弓箭手 莉雅" }, { r: "最上級", n: "弓箭手 庫特" }, { r: "最上級", n: "弓箭手 麗可" }, { r: "最上級", n: "弓箭手 賽普艾" },
-        { r: "最上級", n: "盜賊 史黛" }, { r: "最上級", n: "盜賊 多仁" }, { r: "最上級", n: "盜賊 派克斯" },
-        { r: "最上級", n: "海盜 梅利爾" }, { r: "最上級", n: "海盜 亞伊" }, { r: "最上級", n: "海盜 BOON" },
+        // 最上級 (12名)
+        { r: "最上級", n: "劍士 瑪諾斯" }, { r: "最上級", n: "劍士 巴隆" },
+        { r: "最上級", n: "法師 布里艾" }, { r: "最上級", n: "法師 莉莎貝爾" }, { r: "最上級", n: "法師 露娜" },
+        { r: "最上級", n: "弓箭手 賽爾文" }, { r: "最上級", n: "弓箭手 伊拉達" },
+        { r: "最上級", n: "盜賊 潔克琳" }, { r: "最上級", n: "盜賊 羅薩里奧" }, { r: "最上級", n: "盜賊 庫娜" },
+        { r: "最上級", n: "海盜 Boom" }, { r: "最上級", n: "海盜 冬天" },
 
-        // 上級 (10)
-        { r: "上級", n: "劍士 萊昂內爾" }, { r: "上級", n: "劍士 齊格" },
-        { r: "上級", n: "法師 艾爾比昂" }, { r: "上級", n: "法師 梅里" },
-        { r: "上級", n: "弓箭手 普蕾伊" }, { r: "上級", n: "弓箭手 艾拉" },
-        { r: "上級", n: "盜賊 米勒爾" }, { r: "上級", n: "盜賊 丹尼爾" },
-        { r: "上級", n: "海盜 穆利" }, { r: "上級", n: "海盜 查理" },
+        // 上級 (11名)
+        { r: "上級", n: "劍士 阿諾德" }, { r: "上級", n: "劍士 傑因" },
+        { r: "上級", n: "法師 舒布拉" }, { r: "上級", n: "法師 艾爾拉" }, { r: "上級", n: "法師 卡婭" },
+        { r: "上級", n: "弓箭手 洛尼" }, { r: "上級", n: "弓箭手 馬可" },
+        { r: "上級", n: "盜賊 幸運" }, { r: "最上級", n: "盜賊 多仁" }, // 修正錯字，原圖為上級 多仁
+        { r: "上級", n: "海盜 梅利爾" }, { r: "上級", n: "海盜 在伊" },
 
-        // 中級 (8)
-        { r: "中級", n: "劍士 羅維亞娜" }, { r: "中級", n: "劍士 庫拉" },
-        { r: "中級", n: "法師 麗安" }, { r: "中級", n: "法師 亞利" },
-        { r: "中級", n: "弓箭手 詹姆" }, { r: "中級", n: "弓箭手 希露迪" },
-        { r: "中級", n: "盜賊 菲格" },
-        { r: "中級", n: "海盜 虎克" },
+        // 中級 (11名)
+        { r: "中級", n: "劍士 萊爾普" }, { r: "中級", n: "劍士 西林" },
+        { r: "中級", n: "法師 艾爾比絲" }, { r: "中級", n: "法師 梅里" },
+        { r: "中級", n: "弓箭手 普雷伊" }, { r: "中級", n: "弓箭手 江江" }, { r: "中級", n: "弓箭手 凱羅" },
+        { r: "中級", n: "盜賊 米斯緹" }, { r: "中級", n: "盜賊 丹尼爾" },
+        { r: "中級", n: "海盜 修莉" }, { r: "中級", n: "海盜 吉恩" },
 
-        // 下級 (5)
-        { r: "下級", n: "劍士 索爾" },
-        { r: "下級", n: "法師 娜美" },
-        { r: "下級", n: "弓箭手 芭芭" },
-        { r: "下級", n: "盜賊 尼爾" },
-        { r: "下級", n: "海盜 萊納爾" }
+        // 下級 (14名)
+        { r: "下級", n: "劍士 裴斯" }, { r: "下級", n: "劍士 羅迪亞娜" }, { r: "下級", n: "劍士 塔拉" },
+        { r: "下級", n: "法師 娜美" }, { r: "下級", n: "法師 麗安" }, { r: "下級", n: "法師 哲利" },
+        { r: "下級", n: "弓箭手 比爾" }, { r: "下級", n: "弓箭手 倉武" }, { r: "下級", n: "弓箭手 布雷迪" },
+        { r: "下級", n: "盜賊 尼爾" }, { r: "下級", n: "盜賊 餅乾" },
+        { r: "下級", n: "海盜 奧莉薇" }, { r: "下級", n: "海盜 虎克" }, { r: "下級", n: "海盜 星星家" }
     ];
 
+    // 修正一處錯字：多仁是上級
+    data.find(d => d.n === "盜賊 多仁").r = "上級";
+
     const body = document.getElementById('list-body');
-    const KEY = 'abyss_v5_final_sorted'; // 更新儲存鍵名以避免舊資料混淆
+    const KEY = 'abyss_v5_accurate'; // 更換存檔鍵值，避免讀取到舊的錯誤名單勾選紀錄
     const saved = JSON.parse(localStorage.getItem(KEY) || "[]");
 
     data.forEach((item, idx) => {
         const tr = document.createElement('tr');
-        const job = item.n.split(' ')[0]; // 自動抓取前面的職業名稱
+        const job = item.n.split(' ')[0]; // 自動抓取職業套用顏色
         tr.innerHTML = `<td class="member-name cat-${job}"><span class="rank rank-${item.r}">${item.r}</span>${item.n}</td>`;
         for (let i = 0; i < 5; i++) {
             const td = document.createElement('td');
@@ -118,8 +120,8 @@
         body.appendChild(tr);
     });
 
-    function clearData() { if(confirm("確定清空嗎？")) { localStorage.removeItem(KEY); location.reload(); } }
-    function exportCode() { prompt("複製代碼分享給朋友（或自行備份）：", btoa(localStorage.getItem(KEY) || "[]")); }
+    function clearData() { if(confirm("確定清空所有勾選紀錄嗎？")) { localStorage.removeItem(KEY); location.reload(); } }
+    function exportCode() { prompt("複製代碼分享或備份：", btoa(localStorage.getItem(KEY) || "[]")); }
 </script>
 </body>
 </html>
